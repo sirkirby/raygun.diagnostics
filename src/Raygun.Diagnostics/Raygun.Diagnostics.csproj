@@ -54,7 +54,9 @@
     <None Include="Raygun.Diagnostics.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="web.config.transform" />
+    <None Include="web.config.transform">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
