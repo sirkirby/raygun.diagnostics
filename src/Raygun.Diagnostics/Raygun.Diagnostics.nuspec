@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Chris Kirby</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/sirkirby/raygun.diagnostics/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/sirkirby/raygun.diagnostics</projectUrl>
+    <iconUrl>https://github.com/sirkirby/raygun.diagnostics/blob/master/pkglogo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>initial release</releaseNotes>
+    <copyright>Copyright Chris Kirby 2014</copyright>
+    <tags>Raygun diagnostics tracing debug</tags>
+  </metadata>
+  <files>
+    <file src="app.config.transform" target="content\app.config.transform" />
+    <file src="web.config.transform" target="content\web.config.transform" />
+  </files>
+</package>

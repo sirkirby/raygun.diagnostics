@@ -1,0 +1,34 @@
+{
+  "name": "raygun.diagnostics",
+  "version": "0.5.0",
+  "description": "Raygun diagnostics library for .NET",
+  "author": "Chris Kirby",
+  "homepage": "https://github.com/sirkirby/raygun.diagnostics",
+  "keywords": [
+    "raygun",
+    "diagnostics",
+    "tracing",
+    "debug"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sirkirby/raygun.diagnostics.git"
+  },
+  "bugs": "https://github.com/sirkirby/raygun.diagnostics/issues",
+  "contributors": "https://github.com/sirkirby/raygun.diagnostics/graphs/contributors",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/sirkirby/raygun.diagnostics/blob/master/LICENSE.txt"
+    }
+  ],
+  "dependencies": {},
+  "optionalDependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-shell": "~0.6.4",
+    "grunt-nuget": "~0.1.2"
+  }
+}
