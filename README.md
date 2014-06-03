@@ -58,6 +58,15 @@ Other settings
 ```c#
 // automaticlally tag the trace message from event info and stack information
 Raygun.Diagnostics.Settings.EnableAutoTag = true;
+// enable debug specific options for tracing
+Raygun.Diagnostics.Settings.Debug = true;
+
+// in app example configuration
+Raygun.Diagnostics.Settings.Client.AddWrapperExceptions(new List<Type> { typeof(MyCustomWrapperException) });
+#if DEBUG
+	Raygun.Diagnostics.Settings.EnableAutoTag = true;
+	Raygun.Diagnostics.Settings.Debug = true;
+#endif
 ```
 
 ## Build ##
