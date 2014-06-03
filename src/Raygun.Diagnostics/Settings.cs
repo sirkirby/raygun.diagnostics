@@ -26,5 +26,11 @@ namespace Raygun.Diagnostics
     /// </summary>
     /// <value><c>true</c> if [enable automatic tag]; otherwise, <c>false</c>.</value>
     public static bool EnableAutoTag { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this <see cref="Settings"/> is debug.
+    /// </summary>
+    /// <value><c>true</c> if debug; otherwise, <c>false</c>.</value>
+    public static bool Debug { get; set; }
   }
 }

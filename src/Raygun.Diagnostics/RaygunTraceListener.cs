@@ -107,6 +107,8 @@ namespace Raygun.Diagnostics
           tags.Add(method.Name);
           tags.AddRange(method.GetParameters().Select(p => p.Name));
         }
+        if (Settings.Debug)
+          tags.Add("debug");
       }
 
       return new MessageContext(new Exception(string.Format("{0}. {1}", message, detail)), tags);
@@ -141,6 +143,8 @@ namespace Raygun.Diagnostics
           context.Tags.Add(method.Name);
           context.Tags.AddRange(method.GetParameters().Select(p => p.Name));
         }
+        if (Settings.Debug)
+          context.Tags.Add("debug");
       }
 
       if (args != null)
