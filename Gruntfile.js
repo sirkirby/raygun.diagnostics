@@ -4,15 +4,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     clean: ["dist"],
-    shell: {
-      makeDir: {
-        command: 'mkdir dist'
-      }
-    },
     nugetpack: {
       dist: {
         src: 'src/**/*.csproj',
-        dest: 'dist/'
+        dest: 'dist/',
+        options: {
+          properties: "Configuration=Release"
+        }
       }
     },
     nugetpush: {
@@ -24,14 +22,11 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  // load the shell plugin for cmd goodies
-  grunt.loadNpmTasks('grunt-shell');
-
   // Load the plugin that provides the "nuget" task.
   grunt.loadNpmTasks('grunt-nuget');
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'shell', 'nugetpack']);
+  grunt.registerTask('default', ['clean', 'nugetpack']);
   // Build and publish to nuget task
-  grunt.registerTask('publish', ['clean', 'shell', 'nugetpack', 'nugetpush']);
+  grunt.registerTask('publish', ['clean', 'nugetpack', 'nugetpush']);
 };

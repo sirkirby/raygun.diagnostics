@@ -1,16 +1,19 @@
-﻿using Mindscape.Raygun4Net;
+﻿using System.Diagnostics;
+using Mindscape.Raygun4Net;
+using Raygun.Diagnostics.Models;
 
 namespace Raygun.Diagnostics
 {
   public static class Settings
   {
+    private static RaygunClient _client;
+    private static MessageTraceLevel _messageTraceLevel = MessageTraceLevel.Error;
+
     /// <summary>
     /// Gets or sets the API key.
     /// </summary>
     /// <value>The API key.</value>
     public static string ApiKey { get; set; }
-    
-    private static RaygunClient _client;
 
     /// <summary>
     /// Gets the client.
@@ -32,5 +35,15 @@ namespace Raygun.Diagnostics
     /// </summary>
     /// <value><c>true</c> if debug; otherwise, <c>false</c>.</value>
     public static bool Debug { get; set; }
+
+    /// <summary>
+    /// Gets or sets the message trace level.
+    /// </summary>
+    /// <value>The message trace level.</value>
+    public static MessageTraceLevel MessageTraceLevel 
+    {
+      get { return _messageTraceLevel; }
+      set { _messageTraceLevel = value; }
+    }
   }
 }
