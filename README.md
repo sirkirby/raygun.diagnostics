@@ -33,7 +33,7 @@ catch (Exception e)
 	var tags = new List<string> { "tag1", "tag1" };	
 	Trace.TraceError("Something bad happened", e, tags, customData);
 	// or inline with arg just added to a default Dictionary<object, object> object
-	Trace.TraceError("something bad happened", e, new List<string> {"tag1"}, someParameter, otherParameter);
+	Trace.TraceError("something bad happened", e, new List<string> {"tag1"}, someParameter, someObject);
 }
 ```
 
@@ -56,16 +56,19 @@ client.User "current@userid.com";
 
 Other settings
 ```c#
-// automaticlally tag the trace message from event info and stack information
+// automatically tag the trace message from event info and stack information
 Raygun.Diagnostics.Settings.EnableAutoTag = true;
 // enable debug specific options for tracing
 Raygun.Diagnostics.Settings.Debug = true;
+// set the trace level to Warning and higher (default:Error)
+Raygun.Diagnostics.Settings.MessageTraceLevel = MessageTraceLevel.Warning;
 
 // in app example configuration
 Raygun.Diagnostics.Settings.Client.AddWrapperExceptions(new List<Type> { typeof(MyCustomWrapperException) });
 #if DEBUG
 	Raygun.Diagnostics.Settings.EnableAutoTag = true;
 	Raygun.Diagnostics.Settings.Debug = true;
+	Raygun.Diagnostics.Settings.MessageTraceLevel = MessageTraceLevel.Warning
 #endif
 ```
 
