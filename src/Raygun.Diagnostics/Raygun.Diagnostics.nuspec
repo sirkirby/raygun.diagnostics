@@ -11,9 +11,7 @@
     <iconUrl>https://raw.githubusercontent.com/sirkirby/raygun.diagnostics/master/pkglogo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>- new configuration options
-- improved custom argument processing
-- added error handling</releaseNotes>
+    <releaseNotes>- improved exception processing when passed as argument</releaseNotes>
     <copyright>Copyright Chris Kirby 2014</copyright>
     <tags>Raygun diagnostics tracing debug</tags>
   </metadata>
