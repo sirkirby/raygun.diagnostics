@@ -266,8 +266,15 @@ namespace Raygun.Diagnostics
           var error = localArgs.FirstOrDefault(a => a is Exception);
           if (error != null)
           {
-            context.Exception = new Exception(message, (Exception) error);
+            // use the arg exception for raygun and pass the message as custom data
+            context.Exception = (Exception) error;
+            context.Data.Add("Message", message);
             localArgs.Remove(error);
+          }
+          else
+          {
+            // wrap the trace message as the exception
+            context.Exception = new Exception(message);
           }
 
           // add the rest
