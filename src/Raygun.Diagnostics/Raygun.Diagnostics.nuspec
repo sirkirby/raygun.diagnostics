@@ -11,7 +11,9 @@
     <iconUrl>https://raw.githubusercontent.com/sirkirby/raygun.diagnostics/master/pkglogo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>- improved exception processing when passed as argument</releaseNotes>
+    <releaseNotes>- Debug flag now toggles the message send to raygun. Useful for local debugging.
+- auto tagging now walks the entire stack trace and adds each method name as a tag
+    </releaseNotes>
     <copyright>Copyright Chris Kirby 2014</copyright>
     <tags>Raygun diagnostics tracing debug</tags>
   </metadata>

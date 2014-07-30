@@ -152,12 +152,12 @@ namespace Raygun.Diagnostics
     }
 
     /// <summary>
-    /// Writes the message.
+    /// Sends the message to Raygun
     /// </summary>
     /// <param name="message">The message.</param>
     protected virtual void WriteMessage(MessageContext message)
     {
-      if (message == null) return;
+      if (message == null || Settings.Debug) return;
       try
       {
         Settings.Client.Send(message.Exception, message.Tags, message.Data);
@@ -188,15 +188,13 @@ namespace Raygun.Diagnostics
         {
           // walk up the stack to automatically tag the trace message from method names
           var st = new StackTrace();
-          var frame = st.GetFrame(st.FrameCount - 1);
-          if (frame != null)
+          for (var f = 0; f < st.FrameCount; f++)
           {
+            var frame = st.GetFrame(f);
+            if (frame == null) continue;
             var method = frame.GetMethod();
             tags.Add(method.Name);
-            tags.AddRange(method.GetParameters().Select(p => p.Name));
           }
-          if (Settings.Debug)
-            tags.Add("debug");
         }
 
         return new MessageContext(new Exception(string.Format("{0}. {1}", message, detail)), tags);
@@ -232,15 +230,13 @@ namespace Raygun.Diagnostics
         {
           // walk up the stack to automatically tag the trace message from method names
           var st = new StackTrace();
-          var frame = st.GetFrame(st.FrameCount - 1);
-          if (frame != null)
+          for (var f = 0; f < st.FrameCount; f++)
           {
+            var frame = st.GetFrame(f);
+            if (frame == null) continue;
             var method = frame.GetMethod();
             context.Tags.Add(method.Name);
-            context.Tags.AddRange(method.GetParameters().Select(p => p.Name));
           }
-          if (Settings.Debug)
-            context.Tags.Add("debug");
         }
 
         if (args != null)

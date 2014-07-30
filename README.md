@@ -64,11 +64,10 @@ Raygun.Diagnostics.Settings.Debug = true;
 Raygun.Diagnostics.Settings.MessageTraceLevel = MessageTraceLevel.Warning;
 
 // in app example configuration
-Raygun.Diagnostics.Settings.Client.AddWrapperExceptions(new List<Type> { typeof(MyCustomWrapperException) });
-#if DEBUG
-	Raygun.Diagnostics.Settings.EnableAutoTag = true;
-	Raygun.Diagnostics.Settings.Debug = true;
-	Raygun.Diagnostics.Settings.MessageTraceLevel = MessageTraceLevel.Warning
+Raygun.Diagnostics.Settings.Client.AddWrapperExceptions(new List<Type> { typeof(MyCustomWrapperException) }.ToArray());
+Raygun.Diagnostics.Settings.EnableAutoTag = true;
+#if DEBUG	
+	Raygun.Diagnostics.Settings.Debug = true;	
 #endif
 ```
 

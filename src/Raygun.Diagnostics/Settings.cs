@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Mindscape.Raygun4Net;
+﻿using Mindscape.Raygun4Net;
 using Raygun.Diagnostics.Models;
 
 namespace Raygun.Diagnostics
@@ -25,13 +24,13 @@ namespace Raygun.Diagnostics
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether [enable automatic tag].
+    /// Enables or disables the auto tag feature which will walk the stack trace and add method names as tags
     /// </summary>
     /// <value><c>true</c> if [enable automatic tag]; otherwise, <c>false</c>.</value>
     public static bool EnableAutoTag { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this <see cref="Settings"/> is debug.
+    /// Disable the message send to raygun when debug is enabled
     /// </summary>
     /// <value><c>true</c> if debug; otherwise, <c>false</c>.</value>
     public static bool Debug { get; set; }
