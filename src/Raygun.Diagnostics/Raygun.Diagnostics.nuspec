@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>- Debug flag now toggles the message send to raygun. Useful for local debugging.
-- New custom attribute which can be applied to methods to set default tags.
+- New custom attribute which can be applied to methods or classes to set default tags.
 - Removed EnableAutoTag flag. Now happens automatically when using the new custom attribute.
     </releaseNotes>
     <copyright>Copyright Chris Kirby 2014</copyright>
