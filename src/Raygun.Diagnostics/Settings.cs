@@ -24,12 +24,6 @@ namespace Raygun.Diagnostics
     }
 
     /// <summary>
-    /// Enables or disables the auto tag feature which will walk the stack trace and add method names as tags
-    /// </summary>
-    /// <value><c>true</c> if [enable automatic tag]; otherwise, <c>false</c>.</value>
-    public static bool EnableAutoTag { get; set; }
-
-    /// <summary>
     /// Disable the message send to raygun when debug is enabled
     /// </summary>
     /// <value><c>true</c> if debug; otherwise, <c>false</c>.</value>

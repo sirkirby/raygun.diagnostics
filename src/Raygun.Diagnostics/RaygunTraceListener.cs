@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Raygun.Diagnostics.Helpers;
 using Raygun.Diagnostics.Models;
@@ -128,7 +129,7 @@ namespace Raygun.Diagnostics
       if ((Filter != null) && !Filter.ShouldTrace(eventCache, source, eventType, id, format, args, null, null)) return;
       // look at the format and decide how to handle the message
       // allows for an easy work around for using the Tace.TraceError method for passing custom argument data
-      WriteMessage(Regex.IsMatch(format, @"\{[0-9]+\}") 
+      WriteMessage(Regex.IsMatch(format, @"\{[0-9]+\}")
         ? MessageFromTraceEvent(eventCache, source, eventType, id, String.Format(format, args), null)  // just formatted text
         : MessageFromTraceEvent(eventCache, source, eventType, id, format, args)); // treat args as additional custom information
     }
@@ -184,18 +185,8 @@ namespace Raygun.Diagnostics
           return null;
 
         var tags = new List<string>();
-        if (Settings.EnableAutoTag)
-        {
-          // walk up the stack to automatically tag the trace message from method names
-          var st = new StackTrace();
-          for (var f = 0; f < st.FrameCount; f++)
-          {
-            var frame = st.GetFrame(f);
-            if (frame == null) continue;
-            var method = frame.GetMethod();
-            tags.Add(method.Name);
-          }
-        }
+        // get tags from the stack trace
+        tags.AddRange(GetAttributeTags());
 
         return new MessageContext(new Exception(string.Format("{0}. {1}", message, detail)), tags);
       }
@@ -226,18 +217,8 @@ namespace Raygun.Diagnostics
 
         var context = new MessageContext(new Exception(message), new List<string>(), new Dictionary<object, object>());
 
-        if (Settings.EnableAutoTag)
-        {
-          // walk up the stack to automatically tag the trace message from method names
-          var st = new StackTrace();
-          for (var f = 0; f < st.FrameCount; f++)
-          {
-            var frame = st.GetFrame(f);
-            if (frame == null) continue;
-            var method = frame.GetMethod();
-            context.Tags.Add(method.Name);
-          }
-        }
+        // get tags from the stack trace
+        context.Tags.AddRange(GetAttributeTags());
 
         if (args != null)
         {
@@ -246,7 +227,7 @@ namespace Raygun.Diagnostics
           var custom = localArgs.FirstOrDefault(a => a is IDictionary);
           if (custom != null)
           {
-            context.Data = (IDictionary) custom;
+            context.Data = (IDictionary)custom;
             localArgs.Remove(custom);
           }
 
@@ -254,7 +235,7 @@ namespace Raygun.Diagnostics
           var tags = localArgs.FirstOrDefault(a => a is IList<string>);
           if (tags != null)
           {
-            context.Tags.AddRange((IList<string>) tags);
+            context.Tags.AddRange((IList<string>)tags);
             localArgs.Remove(tags);
           }
 
@@ -263,7 +244,7 @@ namespace Raygun.Diagnostics
           if (error != null)
           {
             // use the arg exception for raygun and pass the message as custom data
-            context.Exception = (Exception) error;
+            context.Exception = (Exception)error;
             context.Data.Add("Message", message);
             localArgs.Remove(error);
           }
@@ -286,6 +267,29 @@ namespace Raygun.Diagnostics
         if (NotAlone()) // if someone else is listening, then trace the error
           Trace.TraceError("Error on MessageFromTraceEvent in RaygunTraceListener : {0}", e.Message);
         return new MessageContext(e);
+      }
+    }
+
+    /// <summary>
+    /// Gets all tags defined using the custom attribute on the curent stack trace
+    /// </summary>
+    /// <returns>IEnumerable&lt;System.String&gt;.</returns>
+    private static IEnumerable<string> GetAttributeTags()
+    {
+      // walk up the stack and check for custom attribute tags
+      var st = new StackTrace();
+      var stackFrames = st.GetFrames();
+      if (stackFrames == null) yield break;
+      foreach (var tag in (from frame in stackFrames
+        where frame != null
+        select frame.GetMethod()
+        into method
+        select method.GetCustomAttribute(typeof (RaygunDiagnosticsAttribute))
+        into attr
+        where attr != null
+        select attr as RaygunDiagnosticsAttribute).SelectMany(attr => attr.Tags))
+      {
+        yield return tag;
       }
     }
   }

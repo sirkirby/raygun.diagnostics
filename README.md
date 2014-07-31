@@ -38,6 +38,19 @@ catch (Exception e)
 ```
 
 ```c#
+[RaygunDiagnostics("tag1", "tag2")]
+public void MyMethod()
+{
+	try{}
+	catch(Exception e)
+	{
+		// the tags defined in the attribute will be automatically applied via reflection
+		Trace.TraceError("something bad happened", e, someParameter, someObject);	
+	}
+}
+```
+
+```c#
 // just send a standard formatted error messages with no custom data or tags (unless auto tag is enabled)
 Trace.TraceError("Some formatted error message on {0} for {1}", something, otherThing);
 Trace.TraceWarning("Some warning information on {0} for {1}", something, otherThing);
@@ -56,8 +69,6 @@ client.User "current@userid.com";
 
 Other settings
 ```c#
-// automatically tag the trace message from event info and stack information
-Raygun.Diagnostics.Settings.EnableAutoTag = true;
 // enable debug specific options for tracing
 Raygun.Diagnostics.Settings.Debug = true;
 // set the trace level to Warning and higher (default:Error)
