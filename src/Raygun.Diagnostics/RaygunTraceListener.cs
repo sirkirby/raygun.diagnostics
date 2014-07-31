@@ -280,14 +280,18 @@ namespace Raygun.Diagnostics
       var st = new StackTrace();
       var stackFrames = st.GetFrames();
       if (stackFrames == null) yield break;
-      foreach (var tag in (from frame in stackFrames
-        where frame != null
-        select frame.GetMethod()
-        into method
-        select method.GetCustomAttribute(typeof (RaygunDiagnosticsAttribute))
-        into attr
-        where attr != null
-        select attr as RaygunDiagnosticsAttribute).SelectMany(attr => attr.Tags))
+      foreach (var tag in from method in (from frame in stackFrames where frame != null select frame.GetMethod() into method select method)
+        let m = method
+        from tag in (from classAttr in method.ReflectedType.GetCustomAttributes(typeof (RaygunDiagnosticsAttribute))
+          where classAttr != null
+          from methodAttr in m.GetCustomAttributes(typeof (RaygunDiagnosticsAttribute))
+          where methodAttr != null
+          select new
+          {
+            cTags = ((RaygunDiagnosticsAttribute) classAttr).Tags,
+            mTags = ((RaygunDiagnosticsAttribute) methodAttr).Tags
+          }).SelectMany(allTags => allTags.cTags.Union(allTags.mTags))
+        select tag)
       {
         yield return tag;
       }

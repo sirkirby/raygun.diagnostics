@@ -2,7 +2,7 @@
 
 namespace Raygun.Diagnostics
 {
-  [AttributeUsage(AttributeTargets.Method)]
+  [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
   public class RaygunDiagnosticsAttribute : Attribute
   {
     /// <summary>
