@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Raygun.Diagnostics.Helpers;
 using Raygun.Diagnostics.Models;
@@ -280,20 +281,19 @@ namespace Raygun.Diagnostics
       var st = new StackTrace();
       var stackFrames = st.GetFrames();
       if (stackFrames == null) yield break;
-      foreach (var tag in from method in (from frame in stackFrames where frame != null select frame.GetMethod() into method select method)
-        let m = method
-        from tag in (from classAttr in method.ReflectedType.GetCustomAttributes(typeof (RaygunDiagnosticsAttribute))
-          where classAttr != null
-          from methodAttr in m.GetCustomAttributes(typeof (RaygunDiagnosticsAttribute))
-          where methodAttr != null
-          select new
-          {
-            cTags = ((RaygunDiagnosticsAttribute) classAttr).Tags,
-            mTags = ((RaygunDiagnosticsAttribute) methodAttr).Tags
-          }).SelectMany(allTags => allTags.cTags.Union(allTags.mTags))
-        select tag)
+
+      foreach (var method in (from frame in stackFrames where frame != null select frame.GetMethod() into method select method))
       {
-        yield return tag;
+        var m = method;
+        var classAttr = m.ReflectedType != null ? m.ReflectedType.GetCustomAttribute(typeof (RaygunDiagnosticsAttribute)) : null;
+        var methodAttr = m.GetCustomAttribute(typeof (RaygunDiagnosticsAttribute));
+        var tags = new List<string>();
+        if (classAttr != null)
+          tags.AddRange(((RaygunDiagnosticsAttribute)classAttr).Tags);
+        if (methodAttr != null)
+          tags.AddRange(((RaygunDiagnosticsAttribute)methodAttr).Tags);
+        foreach (var tag in tags)
+          yield return tag;
       }
     }
   }
