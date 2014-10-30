@@ -36,6 +36,7 @@ catch (Exception e)
 	Trace.TraceError("something bad happened", e, new List<string> {"tag1"}, someParameter, someObject);
 }
 ```
+Tag via [RaygunDiagnosticsAttribute](src/Raygun.Diagnostics/RaygunDiagnosticsAttribute.cs) on any class or method:
 
 ```c#
 [RaygunDiagnostics("tag1", "tag2")]
@@ -76,7 +77,6 @@ Raygun.Diagnostics.Settings.MessageTraceLevel = MessageTraceLevel.Warning;
 
 // in app example configuration
 Raygun.Diagnostics.Settings.Client.AddWrapperExceptions(new List<Type> { typeof(MyCustomWrapperException) }.ToArray());
-Raygun.Diagnostics.Settings.EnableAutoTag = true;
 #if DEBUG	
 	Raygun.Diagnostics.Settings.Debug = true;	
 #endif

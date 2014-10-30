@@ -11,7 +11,7 @@
     <iconUrl>https://raw.githubusercontent.com/sirkirby/raygun.diagnostics/master/pkglogo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>- 4.0 compatibility
+    <releaseNotes>- Now compiled against 4.x release which was required for compatibility. For 3.x compability, please use v0.7.0 or lower.
     </releaseNotes>
     <copyright>Copyright Chris Kirby 2014</copyright>
     <tags>Raygun diagnostics tracing debug</tags>
