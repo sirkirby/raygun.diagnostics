@@ -1,5 +1,7 @@
 # Raygun.Diagnostics #
 
+[![Join the chat at https://gitter.im/sirkirby/raygun.diagnostics](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sirkirby/raygun.diagnostics?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Allow you to use Raygun with your existing System.Diagnostics debug and trace code. 
 
 ## Supported Platforms
