@@ -1,6 +1,12 @@
 # Raygun.Diagnostics #
 
-[![Join the chat at https://gitter.im/sirkirby/raygun.diagnostics](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sirkirby/raygun.diagnostics?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/sirkirby/raygun.diagnostics](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sirkirby/raygun.diagnostics?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
+
+## master ##
+[![Build Status](https://travis-ci.org/sirkirby/raygun.diagnostics.svg?branch=master)](https://travis-ci.org/sirkirby/raygun.diagnostics)
+
+## develop ##
+[![Build Status](https://travis-ci.org/sirkirby/raygun.diagnostics.svg?branch=develop)](https://travis-ci.org/sirkirby/raygun.diagnostics)
 
 Allow you to use Raygun with your existing System.Diagnostics debug and trace code. 
 
