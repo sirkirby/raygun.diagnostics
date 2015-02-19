@@ -3,4 +3,4 @@ solution: src/Raygun.Diagnostics.sln
 notifications:
   slack:
     secure: hXWO4iKYjAdJR0qUuV2c/pwRdkIs9KGOohSV0j5deUp6BEaoiJfxlPDCZvyeQN6RnbFHqe5c1xddTMzdITx7t7zWbRTmoIbsTLA7f1zRZylA89nbBNso65pC3l6rwjhCLvIze84TV2dmrTKIPyR/Rw35apAr8rSS3oyEYotpFtg=
-    email: false
+  email: false
