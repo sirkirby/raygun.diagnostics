@@ -223,7 +223,7 @@ namespace Raygun.Diagnostics
 
         if (args != null)
         {
-          var localArgs = args.ToList();
+          var localArgs = args.Where(a => a != null).ToList();
           // check the args for custom data
           var custom = localArgs.FirstOrDefault(a => a is IDictionary);
           if (custom != null)
