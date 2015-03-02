@@ -1,6 +1,6 @@
 {
   "name": "raygun.diagnostics",
-  "version": "0.5.0",
+  "version": "0.7.2",
   "description": "Raygun diagnostics library for .NET",
   "author": "Chris Kirby",
   "homepage": "https://github.com/sirkirby/raygun.diagnostics",
