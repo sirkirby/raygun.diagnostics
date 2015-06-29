@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Raygun.Diagnostics.Helpers;
 using Raygun.Diagnostics.Models;
@@ -162,6 +161,10 @@ namespace Raygun.Diagnostics
       if (message == null || Settings.Debug) return;
       try
       {
+        // add default tags to every send if specified
+        if (Settings.DefaultTags != null)
+          message.Tags.AddRange(Settings.DefaultTags);
+
         Settings.Client.Send(message.Exception, message.Tags, message.Data);
       }
       catch (Exception e)

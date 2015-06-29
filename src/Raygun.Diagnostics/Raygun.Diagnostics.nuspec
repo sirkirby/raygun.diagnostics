@@ -11,7 +11,7 @@
     <iconUrl>https://raw.githubusercontent.com/sirkirby/raygun.diagnostics/master/pkglogo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>- Added compatibility with v5 of raygun sdk. For v4.2.x, please use previous version.
+    <releaseNotes>- Added new setting for default tags. If definied, they are included with every message generated.
     </releaseNotes>
     <copyright>Copyright Chris Kirby 2015</copyright>
     <tags>Raygun diagnostics tracing debug</tags>

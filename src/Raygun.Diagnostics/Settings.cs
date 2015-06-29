@@ -9,13 +9,13 @@ namespace Raygun.Diagnostics
     private static MessageTraceLevel _messageTraceLevel = MessageTraceLevel.Error;
 
     /// <summary>
-    /// Gets or sets the API key.
+    /// The Raygun api key. This value will be used in place of a the app.config.
     /// </summary>
     /// <value>The API key.</value>
     public static string ApiKey { get; set; }
 
     /// <summary>
-    /// Gets the client.
+    /// Gets the Raygun client. If ApiKey is specified, that will be used in place of the app.config key.
     /// </summary>
     /// <value>The client.</value>
     public static RaygunClient Client
@@ -24,7 +24,7 @@ namespace Raygun.Diagnostics
     }
 
     /// <summary>
-    /// Disable the message send to raygun when debug is enabled
+    /// Toggle debug mode.
     /// </summary>
     /// <value><c>true</c> if debug; otherwise, <c>false</c>.</value>
     public static bool Debug { get; set; }
@@ -38,5 +38,11 @@ namespace Raygun.Diagnostics
       get { return _messageTraceLevel; }
       set { _messageTraceLevel = value; }
     }
+
+    /// <summary>
+    /// Default tags that will be attached to very request.
+    /// </summary>
+    /// <value>The default tags.</value>
+    public static string[] DefaultTags { get; set; }
   }
 }
