@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     clean: ["dist"],
     nugetpack: {
       dist: {
-        src: 'src/**/*.csproj',
+        src: 'src/Raygun.Diagnostics/*.csproj',
         dest: 'dist/',
         options: {
           properties: "Configuration=Release"
@@ -17,7 +17,7 @@ module.exports = function(grunt) {
       dist: {
         src: 'dist/*.nupkg'
       }
-    }  
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
