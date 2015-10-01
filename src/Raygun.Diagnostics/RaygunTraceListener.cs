@@ -288,8 +288,13 @@ namespace Raygun.Diagnostics
       foreach (var method in (from frame in stackFrames where frame != null select frame.GetMethod() into method select method))
       {
         var m = method;
-        var classAttr = m.ReflectedType != null ? m.ReflectedType.GetCustomAttribute(typeof (RaygunDiagnosticsAttribute)) : null;
+#if NET46
+        var classAttr = m.ReflectedType?.GetCustomAttribute(typeof (RaygunDiagnosticsAttribute));
         var methodAttr = m.GetCustomAttribute(typeof (RaygunDiagnosticsAttribute));
+#else
+        var classAttr = m.ReflectedType != null ? m.ReflectedType.GetCustomAttributes(typeof(RaygunDiagnosticsAttribute), false).FirstOrDefault() : null;
+        var methodAttr = m.GetCustomAttributes(typeof(RaygunDiagnosticsAttribute), false).FirstOrDefault();
+#endif
         var tags = new List<string>();
         if (classAttr != null)
           tags.AddRange(((RaygunDiagnosticsAttribute)classAttr).Tags);
