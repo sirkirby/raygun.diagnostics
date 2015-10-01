@@ -5,11 +5,19 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     clean: ["dist"],
     nugetpack: {
-      dist: {
+      debug: {
         src: 'src/Raygun.Diagnostics/*.csproj',
         dest: 'dist/',
         options: {
-          properties: "Configuration=Release"
+         properties: "Configuration=Debug;",
+         verbose: true
+        }
+      },
+      release: {
+      	src: 'src/Raygun.Diagnostics/*.csproj',
+        dest: 'dist/',
+        options: {
+         properties: "Configuration=Release;"
         }
       }
     },
@@ -26,7 +34,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-nuget');
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'nugetpack']);
+  grunt.registerTask('default', ['clean', 'nugetpack:debug']);
+  grunt.registerTask('release', ['clean', 'nugetpack:release']);
   // Build and publish to nuget task
   grunt.registerTask('publish', ['clean', 'nugetpack', 'nugetpush']);
 };

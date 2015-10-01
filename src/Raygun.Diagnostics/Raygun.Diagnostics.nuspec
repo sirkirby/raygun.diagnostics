@@ -19,8 +19,11 @@
   <files>
     <file src="app.config.transform" target="content\app.config.transform" />
     <file src="web.config.transform" target="content\web.config.transform" />
-    <file src="bin\Release\Raygun.Diagnostics.dll" target="lib\net46" />
-    <file src="..\Raygun.Diagnostics.net40\bin\Release\Raygun.Diagnostics.dll" target="lib\net40" />
-    <file src="..\Raygun.Diagnostics.net35\bin\Release\Raygun.Diagnostics.dll" target="lib\net35" />
+    <file src="bin\$configuration$\$id$.dll" target="lib\net46" />
+    <file src="bin\$configuration$\$id$.pdb" target="lib\net46" />
+    <file src="..\$id$.net40\bin\$configuration$\$id$.dll" target="lib\net40" />
+    <file src="..\$id$.net40\bin\$configuration$\$id$.pdb" target="lib\net40" />
+    <file src="..\$id$.net35\bin\$configuration$\$id$.dll" target="lib\net35" />
+    <file src="..\$id$.net35\bin\$configuration$\$id$.pdb" target="lib\net35" />
   </files>
 </package>
