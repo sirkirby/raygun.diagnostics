@@ -73,7 +73,7 @@ public void MyMethod()
 	try{}
 	catch(Exception e)
 	{
-		// the tags defined in the attribute will be automatically applied via reflection
+		// the tags defined in the attribute will pass through to Raygun
 		Trace.TraceError("something bad happened", e, someParameter, someObject);
 	}
 }
@@ -87,13 +87,27 @@ Trace.TraceWarning("Some warning information on {0} for {1}", something, otherTh
 Trace.TraceInformation("Ignored by the raygun listener");
 ```
 
+Set default [User](https://raygun.com/blog/2014/01/unique-user-tracking-for-exceptions-and-crashes/) via [RaygunDiagnosticsUserAttribute](src/Raygun.Diagnostics/RaygunDiagnosticsUserAttribute.cs) on any class or method or pass via custom argument:
+
+```c#
+[RaygunDiagnosticsUser("username", "userId")]
+public void MyMethod()
+{
+	try{}
+	catch(Exception e)
+	{
+		// the user defined in the attribute will pass through to Raygun
+		Trace.TraceError("something bad happened", e, someParameter, someObject);
+		// pass the user as an arg via the recognized RaygunIdentifierMessage object
+		Trace.TraceError("something bad happened", e, new RaygunIdentifierMessage(user.Username) { Fullname = user.Name, Email = user.Email, UUID = user.Id) });
+	}
+}
+```
+
 Custom Raygun client settings (http://raygun.io/docs/Languages#net)
 ```c#
 // the listener uses this staic instace of the raygun client
 var client = Raygun.Diagnostics.Settings.Client;
-// example for user tracking
-client.User "current@userid.com";
-// see other settings in the Raygun documentation
 ```
 
 Other settings
