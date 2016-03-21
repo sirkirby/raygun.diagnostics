@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raygun.Diagnostics", "Raygun.Diagnostics\Raygun.Diagnostics.csproj", "{F6B7C4C3-3D38-4A14-B922-9BAD87F869BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raygun.Diagnostics.net35", "Raygun.Diagnostics.net35\Raygun.Diagnostics.net35.csproj", "{45ABC870-0EEB-472D-B9B9-7491F3F0C0A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raygun.Diagnostics.net40", "Raygun.Diagnostics.net40\Raygun.Diagnostics.net40.csproj", "{EC52E080-41D3-4B42-A924-7578115F78B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raygun.Diagnostics.Tests", "Raygun.Diagnostics.Tests\Raygun.Diagnostics.Tests.csproj", "{449A36CE-7059-4B81-9703-4406D710BA55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{EC52E080-41D3-4B42-A924-7578115F78B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC52E080-41D3-4B42-A924-7578115F78B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC52E080-41D3-4B42-A924-7578115F78B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{449A36CE-7059-4B81-9703-4406D710BA55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{449A36CE-7059-4B81-9703-4406D710BA55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{449A36CE-7059-4B81-9703-4406D710BA55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{449A36CE-7059-4B81-9703-4406D710BA55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

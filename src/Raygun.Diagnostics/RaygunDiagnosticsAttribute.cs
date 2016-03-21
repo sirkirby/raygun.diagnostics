@@ -1,4 +1,5 @@
 ﻿using System;
+using Mindscape.Raygun4Net.Messages;
 
 namespace Raygun.Diagnostics
 {
@@ -10,6 +11,11 @@ namespace Raygun.Diagnostics
     /// </summary>
     /// <value>The tags.</value>
     public string[] Tags { get; set; }
+
+    /// <summary>
+    /// Raygun user object
+    /// </summary>
+    public RaygunIdentifierMessage User { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RaygunDiagnosticsAttribute"/> class.

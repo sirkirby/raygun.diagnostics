@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Mindscape.Raygun4Net.Messages;
 using Raygun.Diagnostics.Helpers;
 using Raygun.Diagnostics.Models;
 
@@ -156,7 +157,7 @@ namespace Raygun.Diagnostics
     /// Sends the message to Raygun
     /// </summary>
     /// <param name="message">The message.</param>
-    protected virtual void WriteMessage(MessageContext message)
+    public virtual void WriteMessage(MessageContext message)
     {
       if (message == null || Settings.Debug) return;
       try
@@ -165,7 +166,7 @@ namespace Raygun.Diagnostics
         if (Settings.DefaultTags != null)
           message.Tags.AddRange(Settings.DefaultTags);
 
-        Settings.Client.Send(message.Exception, message.Tags, message.Data);
+        Settings.Client.Send(message.Exception, message.Tags, message.Data, message.User);
       }
       catch (Exception e)
       {
@@ -181,7 +182,7 @@ namespace Raygun.Diagnostics
     /// <param name="detail">The detail.</param>
     /// <param name="eventType">Type of the event.</param>
     /// <returns>MessageContext.</returns>
-    protected virtual MessageContext MessageFromString(string message, string detail = null, TraceEventType eventType = TraceEventType.Information)
+    public virtual MessageContext MessageFromString(string message, string detail = null, TraceEventType eventType = TraceEventType.Information)
     {
       try
       {
@@ -191,8 +192,10 @@ namespace Raygun.Diagnostics
         var tags = new List<string>();
         // get tags from the stack trace
         tags.AddRange(GetAttributeTags());
+        // get user from stack trace
+        var attributeUser = GetAttributeUser();
 
-        return new MessageContext(new Exception(string.Format("{0}. {1}", message, detail)), tags);
+        return new MessageContext(new Exception(string.Format("{0}. {1}", message, detail)), tags, user: attributeUser);
       }
       catch (Exception e)
       {
@@ -212,17 +215,21 @@ namespace Raygun.Diagnostics
     /// <param name="message">The message.</param>
     /// <param name="args">The arguments.</param>
     /// <returns>MessageContext.</returns>
-    protected virtual MessageContext MessageFromTraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message, params object[] args)
+    public virtual MessageContext MessageFromTraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message, params object[] args)
     {
       try
       {
         if (!eventType.IsValid())
           return null;
 
-        var context = new MessageContext(new Exception(message), new List<string>(), new Dictionary<object, object>());
+        var context = new MessageContext(new Exception(message), new List<string>(), new Dictionary<object, object>(), new RaygunIdentifierMessage(AppDomain.CurrentDomain.FriendlyName) {IsAnonymous = true});
 
         // get tags from the stack trace
         context.Tags.AddRange(GetAttributeTags());
+        // get user from the stack trace
+        var attributeUser = GetAttributeUser();
+        if (attributeUser != null)
+          context.User = attributeUser;
 
         if (args != null)
         {
@@ -258,6 +265,13 @@ namespace Raygun.Diagnostics
             context.Exception = new Exception(message);
           }
 
+          // check for user information
+          var user = localArgs.FirstOrDefault(a => a is RaygunIdentifierMessage);
+          if (user != null)
+          {
+            context.User = (RaygunIdentifierMessage)user;
+          }
+
           // add the rest
           var count = 0;
           foreach (var leftover in localArgs)
@@ -274,11 +288,39 @@ namespace Raygun.Diagnostics
       }
     }
 
+    public static RaygunIdentifierMessage GetAttributeUser()
+    {
+      // walk up the stack and check for custom attribute tags
+      var st = new StackTrace();
+      var stackFrames = st.GetFrames();
+      if (stackFrames == null) return null;
+
+      foreach (var method in (from frame in stackFrames where frame != null select frame.GetMethod() into method select method))
+      {
+        var m = method;
+#if NET46
+        var classAttr = m.ReflectedType?.GetCustomAttribute(typeof(RaygunDiagnosticsUserAttribute));
+        var methodAttr = m.GetCustomAttribute(typeof(RaygunDiagnosticsUserAttribute));
+#else
+        var classAttr = m.ReflectedType != null ? m.ReflectedType.GetCustomAttributes(typeof(RaygunDiagnosticsUserAttribute), false).FirstOrDefault() : null;
+        var methodAttr = m.GetCustomAttributes(typeof(RaygunDiagnosticsUserAttribute), false).FirstOrDefault();
+#endif
+
+        // take the first instance of the attribute, starting with methods
+        if (methodAttr != null)
+          return ((RaygunDiagnosticsUserAttribute) methodAttr).User;
+        if (classAttr != null)
+          return ((RaygunDiagnosticsUserAttribute) classAttr).User;
+        
+      }
+      return null;
+    }
+
     /// <summary>
     /// Gets all tags defined using the custom attribute on the curent stack trace
     /// </summary>
     /// <returns>IEnumerable&lt;System.String&gt;.</returns>
-    private static IEnumerable<string> GetAttributeTags()
+    public static IEnumerable<string> GetAttributeTags()
     {
       // walk up the stack and check for custom attribute tags
       var st = new StackTrace();
@@ -295,11 +337,12 @@ namespace Raygun.Diagnostics
         var classAttr = m.ReflectedType != null ? m.ReflectedType.GetCustomAttributes(typeof(RaygunDiagnosticsAttribute), false).FirstOrDefault() : null;
         var methodAttr = m.GetCustomAttributes(typeof(RaygunDiagnosticsAttribute), false).FirstOrDefault();
 #endif
+        // build a list of tags from all method and class attributes in the stack trace
         var tags = new List<string>();
         if (classAttr != null)
-          tags.AddRange(((RaygunDiagnosticsAttribute)classAttr).Tags);
+          tags.AddRange(((RaygunDiagnosticsAttribute) classAttr).Tags);
         if (methodAttr != null)
-          tags.AddRange(((RaygunDiagnosticsAttribute)methodAttr).Tags);
+          tags.AddRange(((RaygunDiagnosticsAttribute) methodAttr).Tags);
         foreach (var tag in tags)
           yield return tag;
       }
