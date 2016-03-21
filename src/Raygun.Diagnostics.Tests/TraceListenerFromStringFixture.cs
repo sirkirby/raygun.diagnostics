@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using NUnit.Framework;
+using Raygun.Diagnostics.Models;
 
 namespace Raygun.Diagnostics.Tests
 {
@@ -12,12 +13,14 @@ namespace Raygun.Diagnostics.Tests
     public void Init()
     {
       _listener = new RaygunTraceListener();
+      Settings.MessageTraceLevel = MessageTraceLevel.Error;
     }
 
     [Test]
     public void RaygunExceptionMessageShouldMirrorTraceErrorMessage()
     {
-      var context = _listener.MessageFromString("nunit test RaygunExceptionMessageShouldMirrorTraceErrorMessage", "string exception", TraceEventType.Error);
+      var listener = new RaygunTraceListener();
+      var context = listener.MessageFromString("nunit test RaygunExceptionMessageShouldMirrorTraceErrorMessage", "string exception", TraceEventType.Error);
       Assert.That(context, Is.Not.Null);
       Assert.That(context.Exception, Is.Not.Null);
       Assert.That(context.Exception.Message, Does.Contain("nunit test RaygunExceptionMessageShouldMirrorTraceErrorMessage"));

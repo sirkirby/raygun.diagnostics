@@ -18,6 +18,8 @@ namespace Raygun.Diagnostics.Tests
     {
       _listener = new RaygunTraceListener();
       _raygunUser = new RaygunIdentifierMessage("johnd") {UUID = "12345", Email = "johnd@email.com", FullName = "John D", FirstName = "John", IsAnonymous = false};
+      Settings.MessageTraceLevel = MessageTraceLevel.Error;
+
     }
 
     [Test]
