@@ -166,7 +166,7 @@ namespace Raygun.Diagnostics
         if (Settings.DefaultTags != null)
           message.Tags.AddRange(Settings.DefaultTags);
 
-        Settings.Client.Send(message.Exception, message.Tags, message.Data, message.User);
+        Settings.Client.Send(message.Exception, message.Tags, message.Data, message.GetRaygunUser());
       }
       catch (Exception e)
       {
@@ -195,7 +195,7 @@ namespace Raygun.Diagnostics
         // get user from stack trace
         var attributeUser = GetAttributeUser();
 
-        return new MessageContext(new Exception(string.Format("{0}. {1}", message, detail)), tags, user: attributeUser);
+        return new MessageContext(new Exception($"{message}. {detail}"), tags, user: attributeUser);
       }
       catch (Exception e)
       {
@@ -222,7 +222,7 @@ namespace Raygun.Diagnostics
         if (!eventType.IsValid())
           return null;
 
-        var context = new MessageContext(new Exception(message), new List<string>(), new Dictionary<object, object>(), new RaygunIdentifierMessage(AppDomain.CurrentDomain.FriendlyName) {IsAnonymous = true});
+        var context = new MessageContext(new Exception(message), new List<string>(), new Dictionary<object, object>(), new UserInfo(AppDomain.CurrentDomain.FriendlyName) {IsAnonymous = true});
 
         // get tags from the stack trace
         context.Tags.AddRange(GetAttributeTags());
@@ -266,16 +266,37 @@ namespace Raygun.Diagnostics
           }
 
           // check for user information
-          var user = localArgs.FirstOrDefault(a => a is RaygunIdentifierMessage);
+          var user = localArgs.FirstOrDefault(a => a.HasProperty("username"));
           if (user != null)
           {
-            context.User = (RaygunIdentifierMessage)user;
+            object username;
+            user.TryGetPropertyValue("username", out username);
+            object userId;
+            user.TryGetPropertyValue("id", out userId);
+            object userEmail;
+            user.TryGetPropertyValue("email", out userEmail);
+            object userFullName;
+            user.TryGetPropertyValue("fullname", out userFullName);
+            object userFirstName;
+            user.TryGetPropertyValue("firstname", out userFirstName);
+            object userIsAnonymous;
+            user.TryGetPropertyValue("isAnonymous", out userIsAnonymous);
+
+            context.User = new UserInfo(username?.ToString()) { Id = userId?.ToString(), Email = userEmail?.ToString(), FullName = userFullName?.ToString(), FirstName = userFirstName?.ToString()};
+          }
+          else
+          {
+            user = localArgs.FirstOrDefault(a => a is IUserInfo);
+            if (user != null)
+            {
+              context.User = (IUserInfo) user;
+            }
           }
 
           // add the rest
           var count = 0;
           foreach (var leftover in localArgs)
-            context.Data.Add(String.Format("arg-{0}", count++), leftover);
+            context.Data.Add($"arg-{count++}", leftover);
         }
 
         return context;
@@ -288,7 +309,11 @@ namespace Raygun.Diagnostics
       }
     }
 
-    public static RaygunIdentifierMessage GetAttributeUser()
+    /// <summary>
+    /// Gets the user info from the custom attribute
+    /// </summary>
+    /// <returns>IUserInfo.</returns>
+    public static IUserInfo GetAttributeUser()
     {
       // walk up the stack and check for custom attribute tags
       var st = new StackTrace();

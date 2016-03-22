@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Mindscape.Raygun4Net.Messages;
+using Moq;
 using NUnit.Framework;
 using Raygun.Diagnostics.Models;
 
@@ -11,13 +11,29 @@ namespace Raygun.Diagnostics.Tests
   public class TraceListenerFromTraceEventFixture
   {
     private RaygunTraceListener _listener;
-    private RaygunIdentifierMessage _raygunUser;
+    private Mock<IUserInfo> _userInfo;
+    private object _anonUserInfo;
 
     [SetUp]
     public void Init()
     {
       _listener = new RaygunTraceListener();
-      _raygunUser = new RaygunIdentifierMessage("johnd") {UUID = "12345", Email = "johnd@email.com", FullName = "John D", FirstName = "John", IsAnonymous = false};
+      _userInfo = new Mock<IUserInfo>();
+      _userInfo.SetupProperty(u => u.Username, "johnd");
+      _userInfo.SetupProperty(u => u.Email, "johnd@email.com");
+      _userInfo.SetupProperty(u => u.Id, "1234");
+      _userInfo.SetupProperty(u => u.FullName, "John D");
+      _userInfo.SetupProperty(u => u.FirstName, "John");
+      _userInfo.SetupProperty(u => u.IsAnonymous, false);
+      _anonUserInfo = new
+      {
+        Username = "johnd",
+        Id = "1234",
+        Email = "johnd@email.com",
+        FullName = "John D",
+        FirstName = "John",
+        IsAnonymous = false
+      };
       Settings.MessageTraceLevel = MessageTraceLevel.Error;
 
     }
@@ -39,15 +55,43 @@ namespace Raygun.Diagnostics.Tests
     }
 
     [Test, RaygunDiagnosticsUser("johnd-method", "1234-method", "johnd@email.com-method", "John D-method", "John-method")]
-    public void RaygunEventTraceUserPassedViaCustomArgOverridesClassOrMethodAttribute()
+    public void RaygunEventTraceTypedUserInfoPassedViaCustomArgOverridesClassOrMethodAttribute()
     {
-      var context = _listener.MessageFromTraceEvent(null, "nunit", TraceEventType.Error, 0, "nunit test GetRaygunUserFromMessageTraceEvent", _raygunUser);
+      var context = _listener.MessageFromTraceEvent(null, "nunit", TraceEventType.Error, 0, "nunit test GetRaygunUserFromMessageTraceEvent", _userInfo.Object);
 
       Assert.That(context.User, Is.Not.Null);
-      Assert.That(context.User.Identifier, Does.Contain(_raygunUser.Identifier));
-      Assert.That(context.User.Email, Does.Contain(_raygunUser.Email));
-      Assert.That(context.User.FullName, Does.Contain(_raygunUser.FullName));
-      Assert.That(context.User.FirstName, Does.Contain(_raygunUser.FirstName));
+      Assert.That(context.User.Username, Does.Contain(_userInfo.Object.Username));
+      Assert.That(context.User.Email, Does.Contain(_userInfo.Object.Email));
+      Assert.That(context.User.FullName, Does.Contain(_userInfo.Object.FullName));
+      Assert.That(context.User.FirstName, Does.Contain(_userInfo.Object.FirstName));
+      Assert.That(context.User.Id, Does.Contain(_userInfo.Object.Id));
+      Assert.That(context.User.IsAnonymous, Is.False);
+    }
+
+    [Test, RaygunDiagnosticsUser("johnd-method", "1234-method", "johnd@email.com-method", "John D-method", "John-method")]
+    public void RaygunEventTraceAnonymousUserInfoPassedViaCustomArgOverridesClassOrMethodAttribute()
+    {
+      var context = _listener.MessageFromTraceEvent(null, "nunit", TraceEventType.Error, 0, "nunit test GetRaygunUserFromMessageTraceEvent", _anonUserInfo);
+
+      Assert.That(context.User, Is.Not.Null);
+      Assert.That(context.User.Username, Does.Contain("johnd"));
+      Assert.That(context.User.Email, Does.Contain("johnd@email.com"));
+      Assert.That(context.User.FullName, Does.Contain("John D"));
+      Assert.That(context.User.FirstName, Does.Contain("John"));
+      Assert.That(context.User.Id, Does.Contain("1234"));
+      Assert.That(context.User.IsAnonymous, Is.False);
+    }
+
+    [Test]
+    public void RaygunEventTraceTypedUserInfoPassedAsArgOverridesClassUserAttribute()
+    {
+      var context = _listener.MessageFromTraceEvent(null, "nunit", TraceEventType.Error, 0, "nunit test RaygunUserPassedAsArgOverridesClassUserAttribute", _userInfo.Object);
+      Assert.That(context.User, Is.Not.Null);
+      Assert.That(context.User.Username, Does.Contain(_userInfo.Object.Username));
+      Assert.That(context.User.Email, Does.Contain(_userInfo.Object.Email));
+      Assert.That(context.User.FullName, Does.Contain(_userInfo.Object.FullName));
+      Assert.That(context.User.FirstName, Does.Contain(_userInfo.Object.FirstName));
+      Assert.That(context.User.Id, Does.Contain(_userInfo.Object.Id));
       Assert.That(context.User.IsAnonymous, Is.False);
     }
 
@@ -90,9 +134,9 @@ namespace Raygun.Diagnostics.Tests
     {
       var context = _listener.MessageFromTraceEvent(null, "nunit", TraceEventType.Error, 0, "nunit test RaygunUserAssignedViaMethodAttribute");
       Assert.That(context.User, Is.Not.Null);
-      Assert.That(context.User.Identifier, Is.EqualTo("johnd-method"));
+      Assert.That(context.User.Username, Is.EqualTo("johnd-method"));
       Assert.That(context.User.Email, Does.Contain("johnd@email.com-method"));
-      Assert.That(context.User.UUID, Does.Contain("1234-method"));
+      Assert.That(context.User.Id, Does.Contain("1234-method"));
       Assert.That(context.User.FullName, Does.Contain("John D-method"));
       Assert.That(context.User.FirstName, Does.Contain("John-method"));
       Assert.That(context.User.IsAnonymous, Is.False);
@@ -103,25 +147,14 @@ namespace Raygun.Diagnostics.Tests
     {
       var context = _listener.MessageFromTraceEvent(null, "nunit", TraceEventType.Error, 0, "nunit test RaygunUserAssignedViaClassAttribute");
       Assert.That(context.User, Is.Not.Null);
-      Assert.That(context.User.Identifier, Is.EqualTo("johnd-class"));
+      Assert.That(context.User.Username, Is.EqualTo("johnd-class"));
       Assert.That(context.User.Email, Does.Contain("johnd@email.com-class"));
-      Assert.That(context.User.UUID, Does.Contain("1234-class"));
+      Assert.That(context.User.Id, Does.Contain("1234-class"));
       Assert.That(context.User.FullName, Does.Contain("John D-class"));
       Assert.That(context.User.FirstName, Does.Contain("John-class"));
       Assert.That(context.User.IsAnonymous, Is.False);
     }
 
-    [Test, RaygunDiagnosticsUser("johnd-method", "1234-method", "johnd@email.com-method", "John D-method", "John-method")]
-    public void RaygunEventTraceUserPassedAsArgOverridesClassUserAttribute()
-    {
-      var context = _listener.MessageFromTraceEvent(null, "nunit", TraceEventType.Error, 0, "nunit test RaygunUserPassedAsArgOverridesClassUserAttribute", _raygunUser);
-      Assert.That(context.User, Is.Not.Null);
-      Assert.That(context.User.Identifier, Is.EqualTo("johnd"));
-      Assert.That(context.User.Email, Does.Contain("johnd@email.com"));
-      Assert.That(context.User.UUID, Does.Contain("1234"));
-      Assert.That(context.User.FullName, Does.Contain("John D"));
-      Assert.That(context.User.FirstName, Does.Contain("John"));
-      Assert.That(context.User.IsAnonymous, Is.False);
-    }
+    
   }
 }

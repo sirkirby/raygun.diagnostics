@@ -194,3 +194,6 @@ FakesAssemblies/
 
 #grunt
 dist/
+
+# configuration
+*GhostDoc.xml

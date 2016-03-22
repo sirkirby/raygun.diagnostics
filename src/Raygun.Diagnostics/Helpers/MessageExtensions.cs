@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using Mindscape.Raygun4Net.Messages;
+﻿using System.Reflection;
 
 namespace Raygun.Diagnostics.Helpers
 {
@@ -18,7 +16,11 @@ namespace Raygun.Diagnostics.Helpers
       var property = objectToCheck.GetType().GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
       if (property != null)
       {
+#if NET46
         value = property.GetValue(objectToCheck);
+#else
+        value = property.GetValue(objectToCheck, null);
+#endif
         return true;
       }
       value = null;

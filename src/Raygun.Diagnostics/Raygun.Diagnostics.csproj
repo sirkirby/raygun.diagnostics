@@ -52,6 +52,8 @@
     <Compile Include="Helpers\ValidationExtensions.cs" />
     <Compile Include="Models\MessageContext.cs" />
     <Compile Include="Models\MessageTraceLevel.cs" />
+    <Compile Include="Models\IUserInfo.cs" />
+    <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RaygunDiagnosticsAttribute.cs" />
     <Compile Include="RaygunDiagnosticsUserAttribute.cs" />
