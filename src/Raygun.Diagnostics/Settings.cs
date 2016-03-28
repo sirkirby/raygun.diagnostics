@@ -33,7 +33,7 @@ namespace Raygun.Diagnostics
     /// Gets or sets the message trace level.
     /// </summary>
     /// <value>The message trace level.</value>
-    public static MessageTraceLevel MessageTraceLevel 
+    public static MessageTraceLevel MessageTraceLevel
     {
       get { return _messageTraceLevel; }
       set { _messageTraceLevel = value; }

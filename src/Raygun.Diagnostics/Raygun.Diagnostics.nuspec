@@ -11,7 +11,9 @@
     <iconUrl>https://raw.githubusercontent.com/sirkirby/raygun.diagnostics/master/pkglogo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>- added support for .NET 3.5 and .NET 4.0 frameworks
+    <releaseNotes>- Moving from preview to v1 release
+- Raygun user/identity support via custom argument or through new RaygunDiagnosticsUserAttribute
+- Created NUnit unit tests for helpers and main trace listener functionality
     </releaseNotes>
     <copyright>Copyright Chris Kirby 2015</copyright>
     <tags>Raygun diagnostics tracing debug</tags>

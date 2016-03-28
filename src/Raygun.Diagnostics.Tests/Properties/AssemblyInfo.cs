@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Raygun.Diagnostics")]
-[assembly: AssemblyDescription("Raygun System.Diagnostics tracing library for .NET")]
+[assembly: AssemblyTitle("Raygun.Diagnostics.Tests")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Chris Kirby")]
-[assembly: AssemblyProduct("Raygun.Diagnostics")]
-[assembly: AssemblyCopyright("Copyright © Chris Kirby 2015")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Raygun.Diagnostics.Tests")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ec52e080-41d3-4b42-a924-7578115f78b4")]
+[assembly: Guid("449a36ce-7059-4b81-9703-4406d710ba55")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,6 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0")]
-[assembly: AssemblyFileVersion("1.0.0")]
-[assembly: AssemblyInformationalVersion("1.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

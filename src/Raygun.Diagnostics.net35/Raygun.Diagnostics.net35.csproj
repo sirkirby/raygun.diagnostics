@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mindscape.Raygun4Net, Version=5.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mindscape.Raygun4Net.5.1.1\lib\net35\Mindscape.Raygun4Net.dll</HintPath>
+    <Reference Include="Mindscape.Raygun4Net, Version=5.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mindscape.Raygun4Net.5.3.0\lib\net35\Mindscape.Raygun4Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -42,8 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Raygun.Diagnostics\Helpers\MessageExtensions.cs">
+      <Link>Helpers\MessageExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Raygun.Diagnostics\Helpers\ValidationExtensions.cs">
       <Link>Helpers\ValidationExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics\Models\IUserInfo.cs">
+      <Link>Models\IUserInfo.cs</Link>
     </Compile>
     <Compile Include="..\Raygun.Diagnostics\Models\MessageContext.cs">
       <Link>Models\MessageContext.cs</Link>
@@ -51,8 +57,14 @@
     <Compile Include="..\Raygun.Diagnostics\Models\MessageTraceLevel.cs">
       <Link>Models\MessageTraceLevel.cs</Link>
     </Compile>
+    <Compile Include="..\Raygun.Diagnostics\Models\UserInfo.cs">
+      <Link>Models\UserInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Raygun.Diagnostics\RaygunDiagnosticsAttribute.cs">
       <Link>RaygunDiagnosticsAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics\RaygunDiagnosticsUserAttribute.cs">
+      <Link>RaygunDiagnosticsUserAttribute.cs</Link>
     </Compile>
     <Compile Include="..\Raygun.Diagnostics\RaygunTraceListener.cs">
       <Link>RaygunTraceListener.cs</Link>
