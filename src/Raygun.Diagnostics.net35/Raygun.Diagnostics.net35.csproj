@@ -48,11 +48,17 @@
     <Compile Include="..\Raygun.Diagnostics\Helpers\ValidationExtensions.cs">
       <Link>Helpers\ValidationExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Raygun.Diagnostics\Models\IMessageGroup.cs">
+      <Link>Models\IMessageGroup.cs</Link>
+    </Compile>
     <Compile Include="..\Raygun.Diagnostics\Models\IUserInfo.cs">
       <Link>Models\IUserInfo.cs</Link>
     </Compile>
     <Compile Include="..\Raygun.Diagnostics\Models\MessageContext.cs">
       <Link>Models\MessageContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics\Models\MessageGroup.cs">
+      <Link>Models\MessageGroup.cs</Link>
     </Compile>
     <Compile Include="..\Raygun.Diagnostics\Models\MessageTraceLevel.cs">
       <Link>Models\MessageTraceLevel.cs</Link>

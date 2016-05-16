@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Mindscape.Raygun4Net.Messages;
+using Mindscape.Raygun4Net;
 using Raygun.Diagnostics.Helpers;
 using Raygun.Diagnostics.Models;
 
@@ -166,6 +167,8 @@ namespace Raygun.Diagnostics
         if (Settings.DefaultTags != null)
           message.Tags.AddRange(Settings.DefaultTags);
 
+        //Set the event handler to automatically handle custom grouping logic
+        Settings.Client.CustomGroupingKey += (sender, e) => { HandleGrouping(sender, e, message.Grouping); };
         Settings.Client.Send(message.Exception, message.Tags, message.Data, message.GetRaygunUser());
       }
       catch (Exception e)
@@ -173,6 +176,15 @@ namespace Raygun.Diagnostics
         if (NotAlone()) // if someone else is listening, then trace the error
           Trace.TraceError("Error on Raygun Send() : {0}", e.Message);
       }
+    }
+
+    private void HandleGrouping(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup grouping)
+    {
+        //Only override the grouping if specified
+        if (!String.IsNullOrEmpty(grouping.GroupKey))
+        {
+            e.CustomGroupingKey = grouping.GroupKey;
+        }        
     }
 
     /// <summary>
@@ -293,6 +305,13 @@ namespace Raygun.Diagnostics
             }
           }
 
+          var grouping = localArgs.FirstOrDefault(a => a.HasProperty("groupkey"));
+          if (grouping != null)
+          {
+              context.Grouping = GetGrouping(grouping);
+              localArgs.Remove(grouping);
+          }
+
           // add the rest
           var count = 0;
           foreach (var leftover in localArgs)
@@ -339,6 +358,19 @@ namespace Raygun.Diagnostics
         
       }
       return null;
+    }
+
+    public static IMessageGroup GetGrouping(object group)
+    {
+        object groupKey = new object();
+        var grouping = new MessageGroup();
+
+        if (group.TryGetPropertyValue("groupkey", out groupKey))
+        {
+           grouping.GroupKey = groupKey.ToString();
+        }
+
+        return grouping;        
     }
 
     /// <summary>

@@ -28,6 +28,12 @@ namespace Raygun.Diagnostics.Models
     /// </summary>
     /// <value>The user.</value>
     public IUserInfo User { get; set; }
+    
+    /// <summary>
+    /// Message used for custom hash grouping when sending the error to Raygun.  Raygun does their own examination of the data sent to group errors in sometimes unintended ways.
+    /// This allows the calling application to control the grouping.
+    /// </summary>
+    public IMessageGroup Grouping { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MessageContext" /> class.
@@ -60,6 +66,6 @@ namespace Raygun.Diagnostics.Models
         FirstName = User.FirstName,
         IsAnonymous = User.IsAnonymous
       };
-    }
+    }       
   }
 }
