@@ -167,8 +167,12 @@ namespace Raygun.Diagnostics
         if (Settings.DefaultTags != null)
           message.Tags.AddRange(Settings.DefaultTags);
 
-        //Set the event handler to automatically handle custom grouping logic
-        Settings.Client.CustomGroupingKey += (sender, e) => { HandleGrouping(sender, e, message.Group); };
+        //Set the event handler to automatically handle custom grouping
+        if (message.Group != null)
+        {
+            Settings.Client.CustomGroupingKey += (sender, e) => { HandleGrouping(sender, e, message.Group); };
+        }
+                
         Settings.Client.Send(message.Exception, message.Tags, message.Data, message.GetRaygunUser());
       }
       catch (Exception e)
@@ -181,7 +185,7 @@ namespace Raygun.Diagnostics
     private void HandleGrouping(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup group)
     {
         //Only override the grouping if specified
-        if (group != null && !String.IsNullOrEmpty(group.GroupKey))
+        if (!String.IsNullOrEmpty(group.GroupKey))
         {
             e.CustomGroupingKey = group.GroupKey;
         }        
