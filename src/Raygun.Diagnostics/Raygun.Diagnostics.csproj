@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="Helpers\MessageExtensions.cs" />
     <Compile Include="Helpers\ValidationExtensions.cs" />
+    <Compile Include="Models\MessageGroup.cs" />
+    <Compile Include="Models\IMessageGroup.cs" />
     <Compile Include="Models\MessageContext.cs" />
     <Compile Include="Models\MessageTraceLevel.cs" />
     <Compile Include="Models\IUserInfo.cs" />

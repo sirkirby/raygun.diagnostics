@@ -123,6 +123,20 @@ Custom Raygun client settings (http://raygun.io/docs/Languages#net)
 var client = Raygun.Diagnostics.Settings.Client;
 ```
 
+Custom error grouping is available by using an anonymous type with a "GroupKey" property
+```c#
+public void MyMethod()
+{
+	try{}
+	catch(Exception e)
+	{
+		// aggregate all errors of type MyCustomGroupKey together
+        Trace.TraceError("something bad happened", e, new { GroupKey = "MyCustomGroupKey" });
+	}
+}
+
+```
+
 Other settings
 ```c#
 // enable debug specific options for tracing
