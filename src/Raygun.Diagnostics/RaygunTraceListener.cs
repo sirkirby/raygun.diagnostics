@@ -167,8 +167,12 @@ namespace Raygun.Diagnostics
         if (Settings.DefaultTags != null)
           message.Tags.AddRange(Settings.DefaultTags);
 
-        //Set the event handler to automatically handle custom grouping logic
-        Settings.Client.CustomGroupingKey += (sender, e) => { HandleGrouping(sender, e, message.Grouping); };
+        //Set the event handler to automatically handle custom grouping
+        if (message.Group != null)
+        {
+            Settings.Client.CustomGroupingKey += (sender, e) => { HandleGrouping(sender, e, message.Group); };
+        }
+                
         Settings.Client.Send(message.Exception, message.Tags, message.Data, message.GetRaygunUser());
       }
       catch (Exception e)
@@ -178,12 +182,12 @@ namespace Raygun.Diagnostics
       }
     }
 
-    private void HandleGrouping(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup grouping)
+    private void HandleGrouping(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup group)
     {
         //Only override the grouping if specified
-        if (!String.IsNullOrEmpty(grouping.GroupKey))
+        if (!String.IsNullOrEmpty(group.GroupKey))
         {
-            e.CustomGroupingKey = grouping.GroupKey;
+            e.CustomGroupingKey = group.GroupKey;
         }        
     }
 
@@ -308,7 +312,7 @@ namespace Raygun.Diagnostics
           var grouping = localArgs.FirstOrDefault(a => a.HasProperty("groupkey"));
           if (grouping != null)
           {
-              context.Grouping = GetGrouping(grouping);
+              context.Group = GetGrouping(grouping);
               localArgs.Remove(grouping);
           }
 
