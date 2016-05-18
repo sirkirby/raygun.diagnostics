@@ -4,6 +4,8 @@ using System.Diagnostics;
 using Moq;
 using NUnit.Framework;
 using Raygun.Diagnostics.Models;
+using Mindscape.Raygun4Net;
+using Raygun.Diagnostics.Tests.Models;
 
 namespace Raygun.Diagnostics.Tests
 {
@@ -155,6 +157,33 @@ namespace Raygun.Diagnostics.Tests
       Assert.That(context.User.IsAnonymous, Is.False);
     }
 
-    
+    [Test]
+    public void RaygunStringTraceHasGroupKey()
+    {
+        var groupKey = "unitTestGroup";
+        var context = _listener.MessageFromTraceEvent(new TraceEventCache(), "nunit test RaygunHasGroupKey", TraceEventType.Error, 1, "string exception", new { GroupKey = groupKey });
+        Assert.That(context.Group.GroupKey, Is.EqualTo(groupKey));
+    }
+
+    [Test]
+    public void RaygunStringTraceWithGroupKeyFiresEvent()
+    {
+        var groupKey = "unitTestGroupEvent";
+        var raygunCustomGrouping = string.Empty;
+
+        Settings.Client = new MockRaygunClient();
+
+        //subscribe to the event to detect if it fired correctly
+        _listener.OnGrouping += (obj, e, group) =>
+        {
+            raygunCustomGrouping = e.CustomGroupingKey;
+        };
+        var context = _listener.MessageFromTraceEvent(new TraceEventCache(), "nunit test RaygunFiresGroupEvent", TraceEventType.Error, 1, "string exception", new { GroupKey = groupKey });
+
+        //todo: somehow need to mock the method so it doesn't actually send a message
+        _listener.WriteMessage(context);
+
+        Assert.That(raygunCustomGrouping == groupKey, Is.True);
+    }    
   }
 }

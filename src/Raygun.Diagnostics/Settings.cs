@@ -21,6 +21,7 @@ namespace Raygun.Diagnostics
     public static RaygunClient Client
     {
       get { return _client ?? (_client = ApiKey == null ? new RaygunClient() : new RaygunClient(ApiKey)); }
+      set { _client = value; }
     }
 
     /// <summary>

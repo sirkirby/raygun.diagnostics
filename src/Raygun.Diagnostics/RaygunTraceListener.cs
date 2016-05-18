@@ -12,8 +12,12 @@ using Raygun.Diagnostics.Models;
 
 namespace Raygun.Diagnostics
 {
+  public delegate void Grouped(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup group);
   public class RaygunTraceListener : TraceListener
   {
+
+    public event Grouped OnGrouping;
+
     /// <summary>
     /// Checks for other trace listeners
     /// </summary>
@@ -21,7 +25,7 @@ namespace Raygun.Diagnostics
     {
       // see if others are listening
       return (Trace.Listeners != null && Trace.Listeners["RaygunTraceListener"] != null && Trace.Listeners.Count > 1);
-    }
+    }    
 
     /// <summary>
     /// Emits an error message to Raygun.
@@ -181,14 +185,22 @@ namespace Raygun.Diagnostics
           Trace.TraceError("Error on Raygun Send() : {0}", e.Message);
       }
     }
-
+    
+    /// <summary>
+    /// Method used to bind to the CustomGroupingKey event of the RaygunClient object
+    /// </summary>
+    /// <param name="sender">the Raygun client object firing the event</param>
+    /// <param name="e">The custom group arguments of the RaygunClient message</param>
+    /// <param name="group">The message group that contains the data to tell the Raygun client how to group the message</param>
     private void HandleGrouping(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup group)
     {
         //Only override the grouping if specified
         if (!String.IsNullOrEmpty(group.GroupKey))
         {
             e.CustomGroupingKey = group.GroupKey;
-        }        
+        }
+
+        OnGrouping?.Invoke(sender, e, group);
     }
 
     /// <summary>
