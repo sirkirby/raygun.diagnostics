@@ -6,13 +6,18 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Mindscape.Raygun4Net.Messages;
+using Mindscape.Raygun4Net;
 using Raygun.Diagnostics.Helpers;
 using Raygun.Diagnostics.Models;
 
 namespace Raygun.Diagnostics
 {
+  public delegate void Grouped(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup group);
   public class RaygunTraceListener : TraceListener
   {
+
+    public event Grouped OnGrouping;
+
     /// <summary>
     /// Checks for other trace listeners
     /// </summary>
@@ -20,7 +25,7 @@ namespace Raygun.Diagnostics
     {
       // see if others are listening
       return (Trace.Listeners != null && Trace.Listeners["RaygunTraceListener"] != null && Trace.Listeners.Count > 1);
-    }
+    }    
 
     /// <summary>
     /// Emits an error message to Raygun.
@@ -166,6 +171,12 @@ namespace Raygun.Diagnostics
         if (Settings.DefaultTags != null)
           message.Tags.AddRange(Settings.DefaultTags);
 
+        //Set the event handler to automatically handle custom grouping
+        if (message.Group != null)
+        {
+            Settings.Client.CustomGroupingKey += (sender, e) => { HandleGrouping(sender, e, message.Group); };
+        }
+                
         Settings.Client.Send(message.Exception, message.Tags, message.Data, message.GetRaygunUser());
       }
       catch (Exception e)
@@ -173,6 +184,23 @@ namespace Raygun.Diagnostics
         if (NotAlone()) // if someone else is listening, then trace the error
           Trace.TraceError("Error on Raygun Send() : {0}", e.Message);
       }
+    }
+    
+    /// <summary>
+    /// Method used to bind to the CustomGroupingKey event of the RaygunClient object
+    /// </summary>
+    /// <param name="sender">the Raygun client object firing the event</param>
+    /// <param name="e">The custom group arguments of the RaygunClient message</param>
+    /// <param name="group">The message group that contains the data to tell the Raygun client how to group the message</param>
+    private void HandleGrouping(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup group)
+    {
+        //Only override the grouping if specified
+        if (!String.IsNullOrEmpty(group.GroupKey))
+        {
+            e.CustomGroupingKey = group.GroupKey;
+        }
+
+        OnGrouping?.Invoke(sender, e, group);
     }
 
     /// <summary>
@@ -293,6 +321,13 @@ namespace Raygun.Diagnostics
             }
           }
 
+          var grouping = localArgs.FirstOrDefault(a => a.HasProperty("groupkey"));
+          if (grouping != null)
+          {
+              context.Group = GetGrouping(grouping);
+              localArgs.Remove(grouping);
+          }
+
           // add the rest
           var count = 0;
           foreach (var leftover in localArgs)
@@ -339,6 +374,19 @@ namespace Raygun.Diagnostics
         
       }
       return null;
+    }
+
+    public static IMessageGroup GetGrouping(object group)
+    {
+        object groupKey = new object();
+        var grouping = new MessageGroup();
+
+        if (group.TryGetPropertyValue("groupkey", out groupKey))
+        {
+           grouping.GroupKey = groupKey.ToString();
+        }
+
+        return grouping;        
     }
 
     /// <summary>
