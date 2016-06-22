@@ -2,4 +2,5 @@
 
 * Configuration
    * Raygun
+   * Trace Listener
 
