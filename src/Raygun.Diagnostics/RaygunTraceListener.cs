@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -132,6 +133,9 @@ namespace Raygun.Diagnostics
     /// </PermissionSet>
     public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format, params object[] args)
     {
+      var stackTrace = new StackTrace(true).GetFrame(1);
+      if (format == string.Empty) format = $"An unexpected error occurred while calling {stackTrace.GetMethod().Name} in {Path.GetFileName(stackTrace.GetFileName())} at line {stackTrace.GetFileLineNumber()}";
+
       if ((Filter != null) && !Filter.ShouldTrace(eventCache, source, eventType, id, format, args, null, null)) return;
       // look at the format and decide how to handle the message
       // allows for an easy work around for using the Tace.TraceError method for passing custom argument data
