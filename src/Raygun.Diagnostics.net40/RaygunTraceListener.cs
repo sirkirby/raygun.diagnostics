@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Mindscape.Raygun4Net.Messages;
 using Mindscape.Raygun4Net;
@@ -81,28 +80,6 @@ namespace Raygun.Diagnostics
       if ((Filter != null) && !Filter.ShouldTrace(eventCache, source, eventType, id, null, null, null, data)) return;
       var message = string.Format("{0} trace event", eventType);
       WriteMessage(MessageFromTraceEvent(eventCache, source, eventType, id, message, data));
-    }
-
-    /// <summary>
-    /// Writes trace information, a formatted array of objects and event information to Raygun with a default message format.
-    /// </summary>
-    /// <param name="eventCache">A <see cref="T:System.Diagnostics.TraceEventCache" /> object that contains the current process ID, thread ID, and stack trace information.</param>
-    /// <param name="source">A name used to identify the output, typically the name of the application that generated the trace event.</param>
-    /// <param name="eventType">One of the <see cref="T:System.Diagnostics.TraceEventType" /> values specifying the type of event that has caused the trace.</param>
-    /// <param name="id">A numeric identifier for the event.</param>
-    /// <param name="format">A format string that contains zero or more format items, which correspond to objects in the <paramref name="args" /> array.</param>
-    /// <param name="method">Default format input assigned by : <see cref="T:System.Runtime.CompilerServices.CallerMemeberName"/></param>
-    /// <param name="classPath">Default format input assigned by : <see cref="T:System.Runtime.CompilerServices.CallerFilePath"/></param>
-    /// <param name="line">Default format input assigned by : <see cref="T:System.Runtime.CompilerServices.CallerLineNumber"/></param>
-    /// <param name="args">An object array containing zero or more objects to format.</param>
-    /// <PermissionSet>
-    ///   <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
-    ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
-    /// </PermissionSet>
-    public void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format = "Default", [CallerMemberName] string method = "", [CallerFilePath] string classPath = "", [CallerLineNumber] int line = 0, params object[] args)
-    {
-      if (format == "Default") format = $"An unexpected error occurred while calling {method} in {classPath} at line {line}";
-      TraceEvent(eventCache, source, eventType, id, format, args);
     }
 
     /// <summary>
