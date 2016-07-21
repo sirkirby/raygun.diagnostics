@@ -42,25 +42,55 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\MessageExtensions.cs" />
-    <Compile Include="Helpers\ValidationExtensions.cs" />
-    <Compile Include="Models\IMessageGroup.cs" />
-    <Compile Include="Models\IUserInfo.cs" />
-    <Compile Include="Models\MessageContext.cs" />
-    <Compile Include="Models\MessageGroup.cs" />
-    <Compile Include="Models\MessageTraceLevel.cs" />
-    <Compile Include="Models\UserInfo.cs" />
+    <Compile Include="..\Raygun.Diagnostics.net40\Helpers\MessageExtensions.cs">
+      <Link>Helpers\MessageExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\Helpers\ValidationExtensions.cs">
+      <Link>Helpers\ValidationExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\Models\IMessageGroup.cs">
+      <Link>Models\IMessageGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\Models\IUserInfo.cs">
+      <Link>Models\IUserInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\Models\MessageContext.cs">
+      <Link>Models\MessageContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\Models\MessageGroup.cs">
+      <Link>Models\MessageGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\Models\MessageTraceLevel.cs">
+      <Link>Models\MessageTraceLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\Models\UserInfo.cs">
+      <Link>Models\UserInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\RaygunDiagnosticsAttribute.cs">
+      <Link>RaygunDiagnosticsAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\RaygunDiagnosticsUserAttribute.cs">
+      <Link>RaygunDiagnosticsUserAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\RaygunTraceListener.cs">
+      <Link>RaygunTraceListener.cs</Link>
+    </Compile>
+    <Compile Include="..\Raygun.Diagnostics.net40\Settings.cs">
+      <Link>Settings.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RaygunDiagnosticsAttribute.cs" />
-    <Compile Include="RaygunDiagnosticsUserAttribute.cs" />
-    <Compile Include="RaygunTraceListener.cs" />
-    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config.transform" />
+    <None Include="..\Raygun.Diagnostics.net40\app.config.transform">
+      <Link>app.config.transform</Link>
+    </None>
+    <None Include="..\Raygun.Diagnostics.net40\Raygun.Diagnostics.nuspec">
+      <Link>Raygun.Diagnostics.nuspec</Link>
+    </None>
+    <None Include="..\Raygun.Diagnostics.net40\web.config.transform">
+      <Link>web.config.transform</Link>
+    </None>
     <None Include="packages.config" />
-    <None Include="Raygun.Diagnostics.nuspec" />
-    <None Include="web.config.transform" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

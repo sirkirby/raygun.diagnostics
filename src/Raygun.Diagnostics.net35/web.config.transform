@@ -1,9 +1,0 @@
-<configuration>
-  <system.diagnostics>
-    <trace>
-      <listeners>
-        <add name="RaygunTraceListener" type="Raygun.Diagnostics.RaygunTraceListener, Raygun.Diagnostics" />
-      </listeners>
-    </trace>
-  </system.diagnostics>
-</configuration>
