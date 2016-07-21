@@ -134,7 +134,8 @@ namespace Raygun.Diagnostics
     public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format, params object[] args)
     {
       var stackTrace = new StackTrace(true).GetFrame(1);
-      if (format == string.Empty) format = $"An unexpected error occurred while calling {stackTrace.GetMethod().Name} in {Path.GetFileName(stackTrace.GetFileName())} at line {stackTrace.GetFileLineNumber()}";
+      var method = stackTrace.GetMethod();
+      if (string.IsNullOrEmpty(format)) format = $"An unexpected error occurred while calling {method.Name} in {method.ReflectedType?.Name} at line {stackTrace.GetFileLineNumber()}";
 
       if ((Filter != null) && !Filter.ShouldTrace(eventCache, source, eventType, id, format, args, null, null)) return;
       // look at the format and decide how to handle the message
