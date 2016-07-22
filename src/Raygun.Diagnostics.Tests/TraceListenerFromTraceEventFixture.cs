@@ -184,6 +184,22 @@ namespace Raygun.Diagnostics.Tests
         _listener.WriteMessage(context);
 
         Assert.That(raygunCustomGrouping == groupKey, Is.True);
-    }    
+    }
+
+    [Test]
+    public void RaygunEventTraceUseDefaultMessageFormatWithNullInput()
+    {
+      var context = _listener.MessageFromTraceEvent(new TraceEventCache(), "RaygunEventTraceUseDefaultMessageFormatWithNullInput", TraceEventType.Error, 1, null, _userInfo);
+
+      Assert.That(context.Exception.Message == "An unexpected error occurred while calling RaygunEventTraceUseDefaultMessageFormatWithNullInput in TraceListenerFromTraceEventFixture at line 192.", Is.True);
+    }
+
+    [Test]
+    public void RaygunEventTraceUseDefaultMessageFormatWithEmptyStringInput()
+    {
+      var context = _listener.MessageFromTraceEvent(new TraceEventCache(), "RaygunEventTraceUseDefaultMessageFormatWithEmptyStringInput", TraceEventType.Error, 1, string.Empty, _userInfo);
+
+      Assert.That(context.Exception.Message == "An unexpected error occurred while calling RaygunEventTraceUseDefaultMessageFormatWithEmptyStringInput in TraceListenerFromTraceEventFixture at line 200.", Is.True);
+    }
   }
 }

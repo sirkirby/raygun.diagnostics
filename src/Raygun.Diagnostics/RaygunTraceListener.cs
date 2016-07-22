@@ -14,6 +14,7 @@ using Raygun.Diagnostics.Models;
 namespace Raygun.Diagnostics
 {
   public delegate void Grouped(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup group);
+
   public class RaygunTraceListener : TraceListener
   {
 
@@ -26,7 +27,7 @@ namespace Raygun.Diagnostics
     {
       // see if others are listening
       return (Trace.Listeners != null && Trace.Listeners["RaygunTraceListener"] != null && Trace.Listeners.Count > 1);
-    }    
+    }
 
     /// <summary>
     /// Emits an error message to Raygun.
@@ -59,9 +60,10 @@ namespace Raygun.Diagnostics
     ///   <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
     ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
     /// </PermissionSet>
-    public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id, object data)
+    public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id,
+      object data)
     {
-      TraceData(eventCache, source, eventType, id, new[] { data });
+      TraceData(eventCache, source, eventType, id, new[] {data});
     }
 
     /// <summary>
@@ -76,7 +78,8 @@ namespace Raygun.Diagnostics
     ///   <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
     ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
     /// </PermissionSet>
-    public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id, params object[] data)
+    public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id,
+      params object[] data)
     {
       if ((Filter != null) && !Filter.ShouldTrace(eventCache, source, eventType, id, null, null, null, data)) return;
       var message = string.Format("{0} trace event", eventType);
@@ -112,7 +115,8 @@ namespace Raygun.Diagnostics
     ///   <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
     ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
     /// </PermissionSet>
-    public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
+    public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id,
+      string message)
     {
       if ((Filter != null) && !Filter.ShouldTrace(eventCache, source, eventType, id, message, null, null, null)) return;
       WriteMessage(MessageFromTraceEvent(eventCache, source, eventType, id, message, null));
@@ -131,18 +135,17 @@ namespace Raygun.Diagnostics
     ///   <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
     ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
     /// </PermissionSet>
-    public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format, params object[] args)
+    public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id,
+      string format, params object[] args)
     {
-      var stackTrace = new StackTrace(true).GetFrame(1);
-      var method = stackTrace.GetMethod();
-      if (string.IsNullOrEmpty(format)) format = $"An unexpected error occurred while calling {method.Name} in {method.ReflectedType?.Name} at line {stackTrace.GetFileLineNumber()}";
-
       if ((Filter != null) && !Filter.ShouldTrace(eventCache, source, eventType, id, format, args, null, null)) return;
       // look at the format and decide how to handle the message
       // allows for an easy work around for using the Tace.TraceError method for passing custom argument data
       WriteMessage(Regex.IsMatch(format, @"\{[0-9]+\}")
-        ? MessageFromTraceEvent(eventCache, source, eventType, id, String.Format(format, args), null)  // just formatted text
-        : MessageFromTraceEvent(eventCache, source, eventType, id, format, args)); // treat args as additional custom information
+        ? MessageFromTraceEvent(eventCache, source, eventType, id, String.Format(format, args), null)
+        // just formatted text
+        : MessageFromTraceEvent(eventCache, source, eventType, id, format, args));
+        // treat args as additional custom information
     }
 
     /// <summary>
@@ -179,9 +182,9 @@ namespace Raygun.Diagnostics
         //Set the event handler to automatically handle custom grouping
         if (message.Group != null)
         {
-            Settings.Client.CustomGroupingKey += (sender, e) => { HandleGrouping(sender, e, message.Group); };
+          Settings.Client.CustomGroupingKey += (sender, e) => { HandleGrouping(sender, e, message.Group); };
         }
-                
+
         Settings.Client.Send(message.Exception, message.Tags, message.Data, message.GetRaygunUser());
       }
       catch (Exception e)
@@ -190,7 +193,7 @@ namespace Raygun.Diagnostics
           Trace.TraceError("Error on Raygun Send() : {0}", e.Message);
       }
     }
-    
+
     /// <summary>
     /// Method used to bind to the CustomGroupingKey event of the RaygunClient object
     /// </summary>
@@ -199,13 +202,13 @@ namespace Raygun.Diagnostics
     /// <param name="group">The message group that contains the data to tell the Raygun client how to group the message</param>
     private void HandleGrouping(object sender, RaygunCustomGroupingKeyEventArgs e, IMessageGroup group)
     {
-        //Only override the grouping if specified
-        if (!String.IsNullOrEmpty(group.GroupKey))
-        {
-            e.CustomGroupingKey = group.GroupKey;
-        }
+      //Only override the grouping if specified
+      if (!String.IsNullOrEmpty(group.GroupKey))
+      {
+        e.CustomGroupingKey = group.GroupKey;
+      }
 
-        OnGrouping?.Invoke(sender, e, group);
+      OnGrouping?.Invoke(sender, e, group);
     }
 
     /// <summary>
@@ -215,12 +218,16 @@ namespace Raygun.Diagnostics
     /// <param name="detail">The detail.</param>
     /// <param name="eventType">Type of the event.</param>
     /// <returns>MessageContext.</returns>
-    public virtual MessageContext MessageFromString(string message, string detail = null, TraceEventType eventType = TraceEventType.Information)
+    public virtual MessageContext MessageFromString(string message, string detail = null,
+      TraceEventType eventType = TraceEventType.Information)
     {
       try
       {
         if (!eventType.IsValid())
           return null;
+
+        //Create default message
+        if (string.IsNullOrEmpty(message)) message = DefaultMessage();
 
         var tags = new List<string>();
         // get tags from the stack trace
@@ -248,14 +255,19 @@ namespace Raygun.Diagnostics
     /// <param name="message">The message.</param>
     /// <param name="args">The arguments.</param>
     /// <returns>MessageContext.</returns>
-    public virtual MessageContext MessageFromTraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message, params object[] args)
+    public virtual MessageContext MessageFromTraceEvent(TraceEventCache eventCache, string source,
+      TraceEventType eventType, int id, string message, params object[] args)
     {
       try
       {
         if (!eventType.IsValid())
           return null;
 
-        var context = new MessageContext(new Exception(message), new List<string>(), new Dictionary<object, object>(), new UserInfo(AppDomain.CurrentDomain.FriendlyName) {IsAnonymous = true});
+        //Create default message
+        if (string.IsNullOrEmpty(message)) message = DefaultMessage();
+        
+        var context = new MessageContext(new Exception(message), new List<string>(), new Dictionary<object, object>(),
+        new UserInfo(AppDomain.CurrentDomain.FriendlyName) {IsAnonymous = true});
 
         // get tags from the stack trace
         context.Tags.AddRange(GetAttributeTags());
@@ -271,7 +283,7 @@ namespace Raygun.Diagnostics
           var custom = localArgs.FirstOrDefault(a => a is IDictionary);
           if (custom != null)
           {
-            context.Data = (IDictionary)custom;
+            context.Data = (IDictionary) custom;
             localArgs.Remove(custom);
           }
 
@@ -279,7 +291,7 @@ namespace Raygun.Diagnostics
           var tags = localArgs.FirstOrDefault(a => a is IList<string>);
           if (tags != null)
           {
-            context.Tags.AddRange((IList<string>)tags);
+            context.Tags.AddRange((IList<string>) tags);
             localArgs.Remove(tags);
           }
 
@@ -288,7 +300,7 @@ namespace Raygun.Diagnostics
           if (error != null)
           {
             // use the arg exception for raygun and pass the message as custom data
-            context.Exception = (Exception)error;
+            context.Exception = (Exception) error;
             context.Data.Add("Message", message);
             localArgs.Remove(error);
           }
@@ -315,7 +327,13 @@ namespace Raygun.Diagnostics
             object userIsAnonymous;
             user.TryGetPropertyValue("isAnonymous", out userIsAnonymous);
 
-            context.User = new UserInfo(username?.ToString()) { Id = userId?.ToString(), Email = userEmail?.ToString(), FullName = userFullName?.ToString(), FirstName = userFirstName?.ToString()};
+            context.User = new UserInfo(username?.ToString())
+            {
+              Id = userId?.ToString(),
+              Email = userEmail?.ToString(),
+              FullName = userFullName?.ToString(),
+              FirstName = userFirstName?.ToString()
+            };
           }
           else
           {
@@ -329,8 +347,8 @@ namespace Raygun.Diagnostics
           var grouping = localArgs.FirstOrDefault(a => a.HasProperty("groupkey"));
           if (grouping != null)
           {
-              context.Group = GetGrouping(grouping);
-              localArgs.Remove(grouping);
+            context.Group = GetGrouping(grouping);
+            localArgs.Remove(grouping);
           }
 
           // add the rest
@@ -360,7 +378,9 @@ namespace Raygun.Diagnostics
       var stackFrames = st.GetFrames();
       if (stackFrames == null) return null;
 
-      foreach (var method in (from frame in stackFrames where frame != null select frame.GetMethod() into method select method))
+      foreach (
+        var method in (from frame in stackFrames where frame != null select frame.GetMethod() into method select method)
+        )
       {
         var m = method;
 #if NET46
@@ -376,22 +396,22 @@ namespace Raygun.Diagnostics
           return ((RaygunDiagnosticsUserAttribute) methodAttr).User;
         if (classAttr != null)
           return ((RaygunDiagnosticsUserAttribute) classAttr).User;
-        
+
       }
       return null;
     }
 
     public static IMessageGroup GetGrouping(object group)
     {
-        object groupKey = new object();
-        var grouping = new MessageGroup();
+      object groupKey = new object();
+      var grouping = new MessageGroup();
 
-        if (group.TryGetPropertyValue("groupkey", out groupKey))
-        {
-           grouping.GroupKey = groupKey.ToString();
-        }
+      if (group.TryGetPropertyValue("groupkey", out groupKey))
+      {
+        grouping.GroupKey = groupKey.ToString();
+      }
 
-        return grouping;        
+      return grouping;
     }
 
     /// <summary>
@@ -405,12 +425,14 @@ namespace Raygun.Diagnostics
       var stackFrames = st.GetFrames();
       if (stackFrames == null) yield break;
 
-      foreach (var method in (from frame in stackFrames where frame != null select frame.GetMethod() into method select method))
+      foreach (
+        var method in (from frame in stackFrames where frame != null select frame.GetMethod() into method select method)
+        )
       {
         var m = method;
 #if NET46
-        var classAttr = m.ReflectedType?.GetCustomAttribute(typeof (RaygunDiagnosticsAttribute));
-        var methodAttr = m.GetCustomAttribute(typeof (RaygunDiagnosticsAttribute));
+        var classAttr = m.ReflectedType?.GetCustomAttribute(typeof(RaygunDiagnosticsAttribute));
+        var methodAttr = m.GetCustomAttribute(typeof(RaygunDiagnosticsAttribute));
 #else
         var classAttr = m.ReflectedType != null ? m.ReflectedType.GetCustomAttributes(typeof(RaygunDiagnosticsAttribute), false).FirstOrDefault() : null;
         var methodAttr = m.GetCustomAttributes(typeof(RaygunDiagnosticsAttribute), false).FirstOrDefault();
@@ -425,5 +447,31 @@ namespace Raygun.Diagnostics
           yield return tag;
       }
     }
+
+    public static IDictionary<string, string> GetStackTraceDefaultMessageInfo()
+    {
+      var stackInfo = new Dictionary<string, string>();
+      var st = new StackTrace(true);
+      var stackFrames = st.GetFrames();
+      if (stackFrames == null) return new Dictionary<string, string>();
+
+      var stack = stackFrames.ToList().FirstOrDefault(f => !f.GetMethod().ReflectedType.Module.Name.Contains("Raygun.Diagnostics.dll") 
+                                                            && !f.GetMethod().ReflectedType.Module.Name.Contains("System"));
+      var method = stack.GetMethod();
+
+      stackInfo.Add("MethodName", method.Name);
+      stackInfo.Add("ClassName", method.ReflectedType?.Name);
+      stackInfo.Add("LineNumber", stack.GetFileLineNumber().ToString());
+
+      return stackInfo;
+    }
+
+    private static string DefaultMessage()
+    {
+      //Retrieve stack trace info for default message
+      var stackInfo = GetStackTraceDefaultMessageInfo();
+      return $"An unexpected error occurred while calling {stackInfo["MethodName"]} in {stackInfo["ClassName"]} at line {stackInfo["LineNumber"]}.";
+    }
+
   }
 }
