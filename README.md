@@ -1,6 +1,6 @@
 # Raygun.Diagnostics #
 
-Enables rich Raygun messaging with your existing System.Diagnostics debug and trace code.
+Enables fully featured Raygun crash reporting using your existing System.Diagnostics debug and trace code.
 
 [![Join the chat at https://gitter.im/sirkirby/raygun.diagnostics](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sirkirby/raygun.diagnostics?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -14,7 +14,7 @@ Enables rich Raygun messaging with your existing System.Diagnostics debug and tr
 
 * .NET 3.5
 * .NET 4.0
-* .NET 4.6
+* [.NET Standard 2.0](https://github.com/dotnet/standard/blob/master/docs/versions/netstandard2.0.md)
 
 ## Nuget ##
 
@@ -154,14 +154,14 @@ Raygun.Diagnostics.Settings.Client.AddWrapperExceptions(new List<Type> { typeof(
 Raygun.Diagnostics.Settings.DefaultTags = new[] {"debug", "someDynamicString"};
 ```
 ## Build ##
-Using msbuild (v14+) against [Raygun.Diagnostics.csproj](src/Raygun.Diagnostics/Raygun.Diagnostics.csproj).
-
+`dotnet build Raygun.Diagnostics.sln`
 
 ## Requirements ##
-- Visual Studio 2013+
+
+- Visual Studio 2017+
 - .NET FX 3.5+
 
 ## Copyright & License ##
 
-Copyright 2015 Chris Kirby
+Copyright 2016 Chris Kirby
 [MIT License](LICENSE.txt)
