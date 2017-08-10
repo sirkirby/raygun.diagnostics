@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mindscape.Raygun4Net" Version="5.5.1" />
+    <PackageReference Include="Mindscape.Raygun4Net" Version="5.5.1">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
